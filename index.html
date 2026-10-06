@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MotoGP Setup Manager</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app">
+    <!-- TOPBAR STYLE PADDOCK -->
+    <header class="topbar">
+        <div class="brand">
+            MOTOGP SETUP <span>MANAGER</span>
+            <small>Setup Engine V4 • Coach Expert</small>
+        </div>
+        <div class="user" id="topbarUser">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            <div><strong id="topbarPseudo">Jérémy #83</strong><br><small id="topbarStatus" style="color:var(--green)">Connecté</small></div>
+        </div>
+    </header>
+
+    <!-- ONGLETS DE NAVIGATION PRINCIPAUX -->
+    <nav class="tabs">
+        <button data-page="sisaie" id="btn-saisie">Saisie</button>
+        <button data-page="setups" id="btn-setups">Setups</button>
+        <button data-page="profil" id="btn-profil" class="active">Profil</button>
+        <button data-page="coach" id="btn-coach">Coach IA</button>
+    </nav>
+
+    <main class="main">
+        <!-- ONGLET SAISIE -->
+        <section id="saisie" class="section">
+            <div class="section-title">
+                <h1>Saisie manuelle des réglages</h1>
+            </div>
+            <div class="layout">
+                <div class="card">
+                    <h3>Contexte de course</h3>
+                    <div class="field"><label>Jeu</label><select id="game"><option value="MotoGP 24">MotoGP 24</option><option value="MotoGP 25">MotoGP 25</option><option value="MotoGP 26" selected>MotoGP 26</option></select></div>
+                    <div class="field"><label>Moto</label><select id="bike"><option value="Ducati Desmosedici">Ducati Desmosedici</option><option value="Aprilia RS-GP">Aprilia RS-GP</option><option value="KTM RC16">KTM RC16</option></select></div>
+                    <div class="field"><label>Circuit (22 officiels)</label><select id="track">
+                        <option value="Le Mans" selected>Le Mans</option><option value="Mugello">Mugello</option><option value="Austin">Austin</option><option value="Buriram">Buriram</option>
+                    </select></div>
+                    <div class="field"><label>Météo</label><select id="weather"><option value="Sec - Chaud (Grip max)">Sec - Chaud (Grip max)</option><option value="Pluie">Pluie</option></select></div>
+                </div>
+                <div class="card">
+                    <h3>Réglages de la machine</h3>
+                    <div id="manualSetup"></div>
+                    <div class="manual-actions" style="margin-top:14px;">
+                        <button class="btn green" id="publishManualBtn">Publier ce setup</button>
+                        <button class="btn secondary" id="resetManualBtn">Réinitialiser</button>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3>Diagnostic Rapide</h3>
+                    <div class="field"><label>Phase</label><select id="phase"><option value="freinage" selected>Freinage</option></select></div>
+                    <div class="field"><label>Problème ressenti</label><select id="problem"><option value="rear_lift" selected>La roue arrière se soulève trop</option></select></div>
+                    <div class="field"><label>Commentaire</label><textarea id="comment" placeholder="Précisez votre ressenti..."></textarea></div>
+                    <button class="btn full" id="diagnoseBtn">Lancer le diagnostic</button>
+                    <div id="diagnosticCard" class="card diagnostic" style="margin-top:14px">
+                        <div class="diag-head">⚙ DIAGNOSTIC MÉCANIQUE</div>
+                        <p class="muted" style="margin-top:8px">Sélectionnez un problème et lancez le diagnostic.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ONGLET SETUPS -->
+        <section id="setups" class="section">
+            <div class="section-title">
+                <h1>Setups Publiés — Détails Complets</h1>
+            </div>
+            <div id="publishedList"></div>
+        </section>
+
+        <!-- ONGLET PROFIL (CORRESPONDANT À LA CAPTURE) -->
+        <section id="profil" class="section active">
+            <div class="section-title">
+                <div>
+                    <h1 style="color:var(--red2)">PROFIL PILOTE</h1>
+                    <p class="muted" style="margin:5px 0 0 0;">Tes essais et tes setups enregistrés.</p>
+                </div>
+            </div>
+
+            <div class="card" style="margin-bottom:15px;">
+                <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--text)" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                    <h3 id="profilPseudoTitre" style="margin:0;">Jérémy #83</h3>
+                </div>
+                <p class="muted small" style="margin:0 0 12px 0;">Pilote vMvMotoGP · PS5</p>
+                
+                <div class="field">
+                    <label>Votre Pseudo (Connexion / Déconnexion)</label>
+                    <input type="text" id="pseudoInput" value="Jérémy #83" placeholder="Entrez votre pseudo...">
+                </div>
+                <div style="display:flex; gap:10px; margin-top:10px;">
+                    <button class="btn green" id="btnConnecter" style="flex:1;">Se connecter / Mettre à jour</button>
+                    <button class="btn secondary" id="btnDeconnecter" style="background:#dc3545; flex:1;">Se déconnecter</button>
+                </div>
+            </div>
+
+            <div class="card" style="margin-bottom:15px;">
+                <h3 style="display:flex; align-items:center; gap:8px;">📊 Statistiques</h3>
+                <div class="value-row"><span>Setups publiés</span><span class="value" id="statSetups">0</span></div>
+                <div class="value-row"><span>Runs analysés</span><span class="value" id="statRuns">2</span></div>
+                <div class="value-row"><span>Versions générées</span><span class="value" id="statVersions">2</span></div>
+            </div>
+
+            <div class="card">
+                <h3 style="display:flex; align-items:center; gap:8px;">🧠 Philosophie</h3>
+                <p class="muted small" style="margin:0; line-height:1.5;">Le Coach apprend de tes retours et évite de refaire exactement les mêmes réglages déjà testés.</p>
+            </div>
+        </section>
+
+        <!-- ONGLET COACH IA -->
+        <section id="coach" class="section">
+            <div class="section-title">
+                <h1 style="display:flex; align-items:center; gap:10px;">COACH IA MOTOGP — DIAGNOSTIC RAPIDE</h1>
+            </div>
+            <p class="muted" style="margin-top:-10px; margin-bottom:20px;">Analyse ton ressenti et obtiens des réglages précis, basés sur la mécanique et l'expérience piste.</p>
+            <div class="layout">
+                <div class="card">
+                    <div class="field"><label>Phase de pilotage</label><select id="coachPhase"><option value="freinage">Freinage</option></select></div>
+                    <div class="field"><label>Problème ressenti</label><select id="coachProblem"><option value="rear_lift">La roue arrière se soulève trop</option></select></div>
+                    <div class="field"><label>Moto</label><select id="coachBike"><option value="Ducati Desmosedici">Ducati Desmosedici</option></select></div>
+                    <div class="field"><label>Circuit</label><select id="coachTrack"><option value="Le Mans">Le Mans (France)</option></select></div>
+                    <div class="field"><label>Météo</label><select id="coachWeather"><option value="Sec - Chaud">Sec - Chaud (Grip max)</option></select></div>
+                </div>
+                <div class="card diagnostic">
+                    <div class="diag-head">⚙ DIAGNOSTIC MÉCANIQUE</div>
+                    <div class="warning" style="margin-top:10px">⚠ Problème principal</div>
+                    <p style="font-size:13px;">Transfert de charge trop brutal vers l'avant au freinage.</p>
+                    <div class="diag-box">
+                        <div class="warning">🔧 Ajustements recommandés</div>
+                        <div class="change"><span>Bras oscillant arrière / connecteur</span><span class="up">+1 ↑</span></div>
+                        <div class="change"><span>Extension arrière (monoamortisseur)</span><span class="up">+1 ↑</span></div>
+                    </div>
+                </div>
+                <div class="card context">
+                    <h3>🏁 CONTEXTE</h3>
+                    <button class="btn full" id="generateBtn" style="margin-top:10px; background:var(--red2);">⚡ Générer un Setup Expert</button>
+                </div>
+            </div>
+            <div id="expertResultContainer" style="margin-top:20px;"></div>
+        </section>
+    </main>
+</div>
+<script src="script.js"></script>
+</body>
+</html>
